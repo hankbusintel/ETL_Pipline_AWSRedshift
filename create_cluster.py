@@ -5,6 +5,10 @@ import json
 import pandas as pd
 
 def connect_iam_redshift(config):
+    """
+        Create connection sessions from iam/redshift
+        in AWS and return the session object.
+    """
     iam = boto3.client('iam',aws_access_key_id=config.get('AWS','KEY'),
                      aws_secret_access_key=config.get('AWS','SECRET'),
                      region_name='us-west-2'
@@ -17,6 +21,10 @@ def connect_iam_redshift(config):
     return iam,redshift
     
 def create_iam(config,iam):
+    """
+        Create iam roles if not exists
+        and grant redshift access permission.
+    """
     iam_role_name = config.get('DWH','DWH_IAM_ROLE_NAME')
     try:
         print("1.1 Creating a new IAM Role") 
@@ -53,6 +61,9 @@ def create_iam(config,iam):
 
     
 def create_cluster(config,iam_role,redshift):    
+    """
+        Create redshift cluster if not exists.
+    """
     try:
         response = redshift.create_cluster(        
             ClusterType=config.get('DWH','DWH_CLUSTER_TYPE'),
@@ -72,12 +83,18 @@ def create_cluster(config,iam_role,redshift):
         
 
 def prettyRedshiftProps(props):
+    """
+        Return the status of cluster as pandas data frame
+    """
     pd.set_option('display.max_colwidth', -1)
     keysToShow = ["ClusterIdentifier", "NodeType", "ClusterStatus", "MasterUsername", "DBName", "Endpoint", "NumberOfNodes", 'VpcId']
     x = [(k, v) for k,v in props.items() if k in keysToShow]
     return pd.DataFrame(data=x, columns=["Key", "Value"])
 
 def getClusterAttribute(redshift,config):
+    """
+        Get redshift description attribute.
+    """
     DWH_CLUSTER_IDENTIFIER=config.get('DWH','DWH_CLUSTER_IDENTIFIER')
     myClusterProps=redshift.describe_clusters(ClusterIdentifier=DWH_CLUSTER_IDENTIFIER)['Clusters'][0]
     #DWH_ENDPOINT = myClusterProps['Endpoint']['Address']
@@ -85,6 +102,9 @@ def getClusterAttribute(redshift,config):
            
         
 def cleanup_cluster(config,iam,redshift):
+    """
+        Drop clusters.
+    """
     clusterident=config.get('DWH','DWH_CLUSTER_IDENTIFIER')
     DWH_IAM_ROLE_NAME = config.get('DWH','DWH_IAM_ROLE_NAME')
     redshift.delete_cluster( ClusterIdentifier=clusterident,  SkipFinalClusterSnapshot=True)
@@ -101,7 +121,7 @@ def main():
     dwhattr=create_cluster(config,iam_role,redshift)
     print (dwhattr)
    
-   
+    """execute the following drop command if cluster no longer needed."""
     #cleanup_cluster(config,iam,redshift)
    
 

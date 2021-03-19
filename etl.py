@@ -4,12 +4,22 @@ from sql_queries import copy_table_queries, insert_table_queries
 
 
 def load_staging_tables(cur, conn):
+    """
+        Load staging table from amazon S3
+        bucket to staging table in AWS Redshift.
+    """
     for query in copy_table_queries:
         cur.execute(query)
         conn.commit()
 
 
 def insert_tables(cur, conn):
+    """
+        Load destination (5 tables)
+        from staging table. Insert order should
+        follow the parent-child order:
+        artists, songs, time,users, songplays
+    """
     for query in insert_table_queries:
         cur.execute(query)
         conn.commit()
