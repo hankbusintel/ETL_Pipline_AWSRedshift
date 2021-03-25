@@ -6,8 +6,10 @@ import pandas as pd
 
 def connect_iam_redshift(config):
     """
-        Create connection sessions from iam/redshift
-        in AWS and return the session object.
+    Create connection sessions from iam/redshift
+    in AWS and return the session object.
+    :param config: configparser object
+    :return: iam roles, redshift object.
     """
     iam = boto3.client('iam',aws_access_key_id=config.get('AWS','KEY'),
                      aws_secret_access_key=config.get('AWS','SECRET'),
@@ -22,8 +24,11 @@ def connect_iam_redshift(config):
     
 def create_iam(config,iam):
     """
-        Create iam roles if not exists
-        and grant redshift access permission.
+    Create iam roles if not exists
+    and grant redshift access permission.
+    :param config: configparser object
+    :param iam: iam roles
+    :return: iam role credential
     """
     iam_role_name = config.get('DWH','DWH_IAM_ROLE_NAME')
     try:

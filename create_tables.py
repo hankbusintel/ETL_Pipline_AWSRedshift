@@ -6,7 +6,10 @@ from sql_queries import create_table_queries, drop_table_queries
 
 def drop_tables(cur, conn):
     """
-        Drop database tables in redshift
+    Drop database tables in redshift
+    :param cur: Redshift cursor
+    :param conn: Redshift connection
+    :return: Void
     """
     for query in drop_table_queries:
         cur.execute(query)
@@ -15,7 +18,10 @@ def drop_tables(cur, conn):
 
 def create_tables(cur, conn):
     """
-        Recreate database tables in redshift
+    Recreate database tables in redshift
+    :param cur: Redshift cursor
+    :param conn: Redshift connection
+    :return: Void
     """
     for query in create_table_queries:
         cur.execute(query)
@@ -26,9 +32,7 @@ def create_tables(cur, conn):
 def main():
     config = configparser.ConfigParser()
     config.read('dwh.cfg')
-    
-    
-    
+
     conn = psycopg2.connect("host={} dbname={} user={} password={} port={}".format(*config['CLUSTER'].values()))
     cur = conn.cursor()
 

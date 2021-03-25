@@ -1,13 +1,15 @@
 import configparser
 import psycopg2
 from sql_queries import copy_table_queries, insert_table_queries
-"""
-"""
+
 
 def load_staging_tables(cur, conn):
     """
-        Load staging table from amazon S3
-        bucket to staging table in AWS Redshift.
+    Load staging table from amazon S3
+    bucket to staging table in AWS Redshift.
+    :param cur: Redshift cursor
+    :param conn: Redshift connection
+    :return: Void
     """
     for query in copy_table_queries:
         cur.execute(query)
@@ -16,10 +18,13 @@ def load_staging_tables(cur, conn):
 
 def insert_tables(cur, conn):
     """
-        Load destination (5 tables)
-        from staging table. Insert order should
-        follow the parent-child order:
-        artists, songs, time,users, songplays
+    Load destination (5 tables)
+    from staging table. Insert order should
+    follow the parent-child order:
+    artists, songs, time,users, songplays
+    :param cur: Redshift cursor
+    :param conn: Redshift connection
+    :return: Void
     """
     for query in insert_table_queries:
         cur.execute(query)
