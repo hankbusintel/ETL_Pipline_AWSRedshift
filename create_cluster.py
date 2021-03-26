@@ -82,8 +82,8 @@ def create_cluster(config,iam_role,redshift):
         )
     except Exception as e:
         print(e)
-    dwhAttribute = getClusterAttribute(redshift,config)
-    return dwhAttribute
+    #dwhAttribute = getClusterAttribute(redshift,config)
+    #return dwhAttribute
     
         
 
@@ -123,8 +123,10 @@ def main():
     
     iam,redshift = connect_iam_redshift(config)
     iam_role = create_iam(config,iam)
-    dwhattr=create_cluster(config,iam_role,redshift)
-    print (dwhattr)
+    #create_cluster(config,iam_role,redshift)
+
+    dwhattr=getClusterAttribute(redshift,config)
+    print ("IAM: {}".format(iam_role)+","+str(dwhattr))
    
     """execute the following drop command if cluster no longer needed."""
     #cleanup_cluster(config,iam,redshift)
